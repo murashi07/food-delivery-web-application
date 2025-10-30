@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import rw.food_pick.foodies_backend.io.FoodRequest;
 import rw.food_pick.foodies_backend.io.FoodResponse;
 import rw.food_pick.foodies_backend.service.FoodService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/foods")
@@ -33,5 +35,10 @@ public class FoodController {
         }
         FoodResponse response = foodService.addFood(request, file);
         return response;
+    }
+
+    @GetMapping
+    public List<FoodResponse> readFood(){
+        return foodService.readFoods();
     }
 }
