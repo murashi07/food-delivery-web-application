@@ -41,4 +41,9 @@ public class FoodController {
     public List<FoodResponse> readFood(){
         return foodService.readFoods();
     }
+
+    @GetMapping("/{id}")
+    public FoodResponse readFood(@PathVariable String id){
+        return foodService.readFood(id);
+    }
 }
