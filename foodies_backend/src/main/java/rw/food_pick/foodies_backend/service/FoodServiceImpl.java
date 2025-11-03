@@ -13,6 +13,7 @@ import rw.food_pick.foodies_backend.io.FoodResponse;
 import rw.food_pick.foodies_backend.repository.FoodRepository;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
@@ -80,6 +81,27 @@ public class FoodServiceImpl implements FoodService{
     public FoodResponse readFood(String id) {
        FoodEntity existingFood = foodRepository.findById(id).orElseThrow(() -> new RuntimeException("Food not found for the id:" + id));
        return convertToResponse(existingFood);
+    }
+
+    @Override
+    public boolean deletefile(String filename) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(filename)
+                .build();
+        s3Client.deleteObject(deleteObjectRequest);
+        return true;
+    }
+
+    @Override
+    public void deleteFood(String id) {
+        FoodResponse response = readFood(id);
+        String imageUrl = response.getImageUrl();
+        String filename = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
+        boolean isFileDelete = deletefile(filename);
+        if(isFileDelete){
+            foodRepository.deleteById(response.getId());
+        }
     }
 
 
